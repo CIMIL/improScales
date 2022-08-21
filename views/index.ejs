@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ImproScales</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/FJcW4XD/unitn-logo-black-A-scelta.png">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css">
+  </head>
+
+  <body style="background-color:#000000!important;">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/essentia.js@0.1.3/dist/essentia-wasm.web.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/essentia.js@0.1.3/dist/essentia.js-extractor.js"></script>
+    <script src="https://unpkg.com/essentia.js@0.1.3/dist/essentia.js-core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    
+
+    <!-- MENU -->
+    <div class="ui inverted menu">
+      <div class="container">
+        <div class="left item" style="position:unset;">
+          <a href="/" style="color: white"><i class="guitar big icon" style="margin-left:20px; margin-right:10px;"></i></a>
+          <a href="/" style="color: white"><h1 class="ui header" style="color:white; margin-top:0px;">
+            ImproScales
+          </h1></a>
+        </div>
+      </div>
+
+      <div class="left item" style="position: unset; padding-left: 10px;">
+        <a href="https://www.disi.unitn.it/" target="_blank"><img height="38px" style="margin-right: 16px;" src="https://i.ibb.co/FJcW4XD/unitn-logo-black-A-scelta.png"/></a>
+        <a href="https://www.cimil.disi.unitn.it/" target="_blank"><img height="36px" src="https://www.cimil.disi.unitn.it/wp-content/uploads/2021/05/logo_CIMIL.png"/></a>
+      </div>
+
+      <!-- YT LINK -->
+      <div class="menu yt url container" style="display: none;">
+        <div class="right item" style="position:unset;">Enter a YouTube URL:</div>
+        <div class="right item"  style="margin-right: 30px; position: unset;">
+          <div class="ui inverted action input">
+            <input type="url" id="input_yt_url"
+            placeholder="https://www.youtube.com/watch?v=example"
+            style="width: 350px;"></input>
+            <button class="ui button" id="load_audio_btn">Load audio</button>
+          </div>
+        </div>
+      </div>
+    </div> <!-- END MENU -->
+
+    <!-- LANDING PAGE BODY -->
+    <div id="landingPage" style="height:87%;">
+      <!-- SAMPLE RATE ERROR -->
+      <div class="ui inverted segment" id="sampleRateMsg" style="display:none; width:70%; margin:auto; background-color:black;">
+        <div class="ui inverted medium warning message">
+          <i class="close icon" id="sample_rate_btn"></i>
+          <div class="ui center aligned header">WARNING: We recommend setting the audio sampling rate to 44100Hz.</div>
+          <p style="text-align: left;">Some functions of this app require a sample rate of 44100Hz to be set on your device. 
+            Otherwise, functions like chord recognition and BPM extraction may not work properly. 
+            Unfortunately, we cannot change this setting for you.</p>
+          <ul class="list">
+            <li>If your device is running Windows, please follow <a href="https://samsontech.zendesk.com/hc/en-us/articles/1260802890449-Fix-Windows-10-sample-rate-mismatch-causing-garbled-audio" target="_blank">
+              this guide</a> to change the audio sample rate of both your Speaker and Microphone to 44100Hz.</li>
+            <li>If your device is a Mac, please follow <a href="https://smallbusiness.chron.com/macbook-pro-change-sample-rate-49804.html" target="_blank">
+              this guide</a> instead to change the audio sample rate of both your Speaker and Microphone to 44100Hz.</li>
+          </ul>
+          <p style="text-align: left;">Please reload the page to apply changes.</p>
+        </div>
+      </div>
+
+      <!-- SCALE OR SONG LANDING SEGMENT -->
+      <div class="ui inverted center aligned segment" style="height:55%; display:flex; align-items:center; margin:0px; background-color:black;">
+        
+        <div class="ui inverted very padded placeholder segment" style="width: 85%; padding:30px; padding-bottom:10px; margin:auto;">
+          <div class="ui two column grid">
+            <div class="column">
+              <h3 class="ui inverted center aligned icon header" style="margin-top:-5px; margin-bottom:15px;">
+                <i class="big music icon"></i>
+                Choose a scale to improvise on
+              </h3>
+              <!-- KEY AND SCALE DROPDOWNS -->
+              <div class="ui inline" style="margin-bottom:10px;">
+                <label style="margin-right:8px">Key:</label>
+                <select class="ui inverted small key landing three column search dropdown">
+                  <option disabled value=" "></option>
+                  <option value="C">C</option>
+                  <option value="C#">C#</option>
+                  <option value="Db">Db</option>
+                  <option value="D">D</option>
+                  <option value="D#">D#</option>
+                  <option value="Eb">Eb</option>
+                  <option value="E">E</option>
+                  <option disabled value=" "></option>
+                  <option disabled value=" "></option>
+                  <option value="F">F</option>
+                  <option value="F#">F#</option>
+                  <option value="Gb">Gb</option>
+                  <option value="G">G</option>
+                  <option value="G#">G#</option>
+                  <option value="Ab">Ab</option>
+                  <option value="A">A</option>
+                  <option value="A#">A#</option>
+                  <option value="Bb">Bb</option>
+                  <option value="B">B</option>
+                </select>
+              </div>
+              <div class="ui inline" style="margin-bottom:10px;">
+                <label style="margin-right:8px">Scale:</label>
+                <select class="ui inverted small select scale landing dropdown" style="margin-bottom:10px;"></select>  
+              </div>
+              <p class="scale mode description"></p>
+              <p style="font-size: medium; margin-bottom: 0px;">Scale notes in this key:</p>
+              <p class="mylist notes key" style="font-size: medium;"></p>
+
+              <!-- ACTION -->
+              <div id="scale_only_btn" class="ui blue icon button" style="position:absolute; right:0px; bottom:20px;">
+                Let's play!
+                <i class="angle double right icon"></i>
+              </div>
+            </div>
+
+            <div class="column" style="padding-left:30px;">
+              <h3 class="ui inverted center aligned icon header" style="margin-top:-3px; margin-bottom: 40px;">
+                <a href="https://www.youtube.com/" target="_blank" style="color:white">
+                  <i class="big youtube icon" style="margin-bottom:5px;"></i>
+                </a><br>
+                Upload a song / backing track from youtube
+              </h3>
+              <!-- YT LINK -->
+              <div>
+                <div class="container" style="width:60%; height:38px; margin:auto; padding:9px; border:1px solid rgba(255,255,255,.15)!important; border-radius:0.28rem;">
+                  <div class="ui fluid inverted transparent input" style="margin:auto">
+                    <input type="url" id="landing_input_yt_url" placeholder="https://www.youtube.com/watch?v=example"></input>
+                  </div>
+                </div>
+
+
+              </div>
+              <div></div>
+              <div class="ui tiny inverted right aligned toggle landing checkbox" style="margin-top: 30px;">
+                <input type="checkbox">
+                <label style="font-size: medium;">Compute chords:</label>
+                <p style="color: grey; position: absolute; font-size: small;"><tiny>(beta feature, longer elaboration time)</tiny></p>
+              </div>
+              <!-- ACTION -->
+              <div id="landing_load_audio_btn" class="ui blue icon button" style="position:absolute; right:5px; bottom:20px;">
+                Let's play!
+                <i class="angle double right icon"></i>
+              </div>
+            </div>
+          </div>
+          <div class="ui big inverted vertical divider" style="margin-inline:20px;">Or</div>
+        </div>
+        
+      </div>
+
+      <!-- local saved sessions -->
+      <div class="ui inverted center aligned storage segment" style="display:none; height:35%; margin:0px; display:flex; align-items:center; background-color:black;">
+        <div class="ui inverted segment" style="width:50%; margin:auto;">
+          <div class="ui inverted accordion">
+            <div class="title active" style="font-size: medium; padding-top: 0px;">
+              <i class="dropdown icon"></i>
+              Load a previously analized song:
+              <div class="delete buttons" style="position: absolute; right: 11px; top: 15px">
+                <div class="ui deletesong inverted mini icon basic button" style="display: none;">
+                  <i class="trash alternate icon" style="padding-right: 5px;"></i>
+                  Delete current song
+                </div>
+                <div class="ui deleteallsongs inverted mini icon basic button">
+                  <i class="trash alternate icon" style="padding-right: 5px;"></i>
+                  Delete all songs
+                </div>
+              </div>
+            </div>
+            <div class="content active">
+              <ul class="ui link sessions list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>   
+
+      <!-- FOOTER -->
+      <div class="ui center aligned container" style="height: 10%;">
+        <div class="footer">
+          <p2 style="color: white; vertical-align:10px; margin-right:-3px;">Powered &nbsp;by</p2>
+          <a href="https://mtg.github.io/essentia.js" target="_blank">
+            <img src="https://github.com/MTG/essentia.js/blob/master/src/assets/img/essentiajsbanner.png?raw=true"
+              style="height: 27px;"/>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE GRID BODY -->
+    <div id="mainPage" class="ui grid" style="display: none; margin: 30px">
+
+      <!-- LEFT RAIL -->
+      <div class="ui four wide column">
+
+        <div id="tonalInfoDiv" style="margin-bottom: 30px; display: none;">
+          <div class="ui inverted horizontal divider" style="margin-top: 0px;">Tonal informations</div>
+
+          <div id="bpmDiv">
+            <p style="color: LightSkyBlue; position: absolute; right: 70px; margin-bottom:-1px;">Bpm:</p>
+            <p id="bpmHeader"; style="font-size:large; color:white; position:absolute; right:25px; margin-top:19px;"></p>
+          </div>
+
+
+          <p style="color: LightSkyBlue; margin-bottom:-1px; margin-left:-10px;">Key:</p>
+          <p id="keyHeader"; style="font-size: large; color: white;"></p>
+
+          <p style="color: LightSkyBlue; margin-top: 10px; margin-bottom:-1px; margin-left:-10px;">Scale / mode:</p>
+          <p id="scaleHeader"; style="font-size: large; color: white; margin-top: 0;"></p>
+
+          <div class="ui center aligned container">
+            <div id="edit_tonal_btn" class="ui inverted small icon primary button" style="display: none;">
+              <i class="edit icon" style="padding-right: 5px;"></i>
+              Change key / scale
+            </div>
+          </div>
+        </div>
+
+        <div id="scaleStatsDiv" style="margin-bottom: 30px; display: none">
+          <div class="ui inverted horizontal divider" style="margin-top: 0px;">Scale stats</div>
+          <div class="ui center aligned grid">
+            <div class="two columns row" style="padding-bottom: 0px;">
+              <div class="column">
+                <p style="color: white;">In scale notes</p>
+              </div>
+              <div class="column">
+                <p style="color: white;">Out of scale notes</p>
+              </div>
+            </div>
+            <div class="four columns row" style="padding-top: 0px;">
+              <div class="right aligned column" id="stats_inScaleNotes" style="margin-right: -10px;"></div>
+              <div class="left aligned column" id="stats_inScaleOcc" style="margin-left: -10px;"></div>
+              <div class="right aligned column" id="stats_outOfScaleNotes" style="margin-right: -10px;"></div>
+              <div class="left aligned column" id="stats_outOfScaleOcc" style="margin-left: -10px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="overall stats">
+          <div class="ui inverted horizontal divider" style="margin-top: 0px;">Overall stats</div>
+          
+          <div class = "ui equal width grid">
+            <div class="right aligned column" style="margin-right: -10px;">
+              <p style="color: LightSkyBlue;">Notes played:</p>
+              <p style="color: LightSkyBlue;">Correct notes:</p>
+              <p style="color: LightSkyBlue;">Wrong notes:</p>
+            </div>
+            <div class="column" style="margin-left: -8px;">
+              <p id="totalNotesHeader" style="color: white;"></p>
+              <p id="correctNotesHeader" style="color: white;"></p>
+              <p id="wrongNotesHeader" style="color: white;"></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT BODY -->
+      <div class="ui twelve wide center aligned column">
+
+        <div class="ui inverted headphones left aligned icon info message" style="width:80%; margin:auto; margin-bottom:30px; display:none;">
+          <i class="close icon"></i>
+          <i class="headphones alternate icon"></i>
+          <i class="microphone alternate icon"></i>
+          <div class="content">
+            <div class="header">Headphones are recommended</div>
+            <p>
+              This app will listen to your improvisation through the microphone as you listen to the song,
+              therefore we advise you to use headphones, a headset, or a sound card for a better experience.
+            </p>
+            <div id="dismiss_headphones_btn" class="ui inverted small compact right floated primary icon button" style="margin-top:-5px;">
+              <i class="eye slash outline icon"></i>
+              Don't show again
+            </div>
+          </div>
+        </div>
+
+        <div id="chordsDiv">
+          <div id="chordsToggleSegment" class="ui inverted right aligned toggle mainpage checkbox" style="position:absolute; left:20px;">
+            <input type="checkbox" id="computeChordsCheckbox">
+            <label id="chordsToggleLabel">Compute chords:</label>
+            <p style="color: grey; position: absolute; font-size: x-small;"><tiny>(beta)</tiny></p>
+          </div>
+
+          <div id="chordsDisplay" style="display:flex; align-items:center; align-self: center; display:none;">
+            <h3 
+              id="previousChordHeader";
+              style="color: rgb(170, 170, 170); display: inline-block; margin-top:0px;">
+            </h3>
+            <h1 
+              id="currentChordHeader";
+              style="color: white; display: inline-block; width: 100px; margin-top:0px">
+            </h1>
+            <h3 
+              id="nextChordHeader";
+              style="color: rgb(170, 170, 170); display: inline-block; margin-top:0px">
+            </h3>
+          </div>
+        </div>
+
+        <div id=currentNoteDiv style="height: 69px; width:25%; position:absolute; right:0px;">
+          <p id="currentNoteLabel" style="font-size:large; color:white; margin: 0px;"></p>
+          <p id="currentNoteHeader"; style="font-size:xx-large; color:white; margin:0px;"></p>
+        </div>
+
+        <div id="scaleNotes" class="ui centered container"
+          style="height:69px; width:50%; display:flex; flex-direction:row; align-items: center; justify-content:space-between;">
+        </div>
+
+        <!-- scale only mic button -->
+        <div class="massive ui circular inverted icon red mic scaleonly button" style="width:66px; margin:70px" 
+        data-content="Listens to the mic and analyzes your improvisation." data-variation="inverted">
+          <i class="mic ready icons">
+            <i class="microphone icon"></i>
+            <i class="inverted corner play red icon" style="margin-right: -5px; margin-bottom: -4px;"></i>
+          </i>
+          <i class="mic stop icon" id="mic_stop" style="display: none;"></i>
+        </div>
+
+        <!-- PLAYER BLOCK -->
+        <div class="audioPlayer" style="margin-top: 10px; margin-bottom: 25px;">
+
+          <h4 id="emptyPlayer" style="color: grey; margin-bottom: -50px; margin-top: 40px;">The player is empty. Please enter a YouTube URL to load the audio.</h4>
+
+          <div id="waveform" style="height:200px; margin-inline: 70px; position: relative;">
+            <canvas id="chordsCanva" style="width:100%; height:100%; position:absolute; left:0px"></canvas>
+          </div>
+
+          <div class="timecode" style="color:white; font-size:medium;">
+            <p id=currentTime style="display:inline; position:absolute; left:70px; margin-top:20px">00:00</p>
+            <p id=totalDuration style="display:inline; position:absolute; right:70px; margin-top:20px">00:00</p>
+          </div>
+
+          <div class="controls" style="margin-top: 10px; margin-bottom: 15px;">
+            <div id="stop_btn" class="large ui inverted icon primary button">
+              <i class="step backward icon"
+              alt="Stop Button"></i>
+            </div>
+
+            <div id="play_pause_btn" class="massive ui inverted icon primary button">
+              <i class="play icon" id="play"
+              alt="Play Button"></i>
+              <i class="pause icon" id="pause" 
+              style="display: none" 
+              alt="Pause Button"></i>
+            </div>
+
+            <div class="massive ui inverted icon red mic button" style="width:66px;" 
+            data-content="Plays the song, listens to the mic and analyzes your improvisation." data-variation="inverted">
+              <i class="mic ready icons">
+                <i class="microphone icon"></i>
+                <i class="inverted corner play red icon" style="margin-right: -5px; margin-bottom: -4px;"></i>
+              </i>
+              <i class="mic stop icon" style="display: none;"></i>
+            </div>
+
+            <div id="volume_btn" class="large ui inverted icon primary button">
+              <i class="volume up icon" id="volON"
+              alt="Mute Button"></i>
+              <i class="volume off icon" id="volOFF" 
+              style="display: none" 
+              alt="Unmute Button"></i>
+            </div>
+
+            <div class="ui inverted popup">
+              <input class="volume-slider"
+                id="volume_slider"
+                type="range"
+                name="volume-slider"
+                min="0"
+                max="100"
+                value="50"/>
+            </div>
+            
+          </div> <!-- END OF AUDIO CONTROLS -->
+          <p><a id="nowPlayingHeader" target="_blank"; style="font-size: medium; font-weight:lighter; color: rgb(62, 151, 192);"></a></p>
+        </div> <!-- END OF PLAYER -->
+
+        <!-- local saved sessions -->
+        <div class="ui inverted storage segment" style="display:none; margin-bottom:20px; margin-inline:50px;">
+          <div class="ui inverted accordion">
+            <div class="title active" style="padding-top:2px">
+              <i class="dropdown icon"></i>
+              Previously analized songs:
+              <div class="delete buttons" style="position: absolute; right: 11px; top: 15px">
+                <div class="ui deletesong inverted mini icon basic button" style="display: none;">
+                  <i class="trash alternate icon" style="padding-right: 5px;"></i>
+                  Delete current song
+                </div>
+                <div class="ui deleteallsongs inverted mini icon basic button">
+                  <i class="trash alternate icon" style="padding-right: 5px;"></i>
+                  Delete all songs
+                </div>
+              </div>
+
+            </div>
+            <div class="content active">
+              <ul class="ui link sessions list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="ui center aligned container" style="height: 5%;">
+          <div class="footer">
+            <p2 style="color: white; vertical-align:10px; margin-right:-3px;">Powered &nbsp;by</p2>
+            <a href="https://mtg.github.io/essentia.js" target="_blank">
+              <img src="https://github.com/MTG/essentia.js/blob/master/src/assets/img/essentiajsbanner.png?raw=true"
+                style="height: 27px;"/>
+            </a>
+          </div>
+        </div>
+
+      </div> <!-- END OF RIGHT BODY -->
+
+    </div> <!-- END OF PAGE GRID BODY -->
+
+  </body>
+
+<!-- LOADERS -->
+<div class="ui inactive dimmer" id="loader">
+  <div class="ui big inactive inverted text loader">Fetching the audio track...</div>
+</div>
+
+<!-- Edit session MODAL FORM -->
+<div id="editSessionWrapper">
+  <div id="editSessionModal" class="ui inverted modal">
+    <div class="header">
+      Edit song settings
+    </div>
+    <div class="ui inverted segment">
+      <form class="ui inverted form">
+        <div id="modalSongTitle">
+          <h4 class="ui inverted dividing header">Song informations</h4>
+          <div class="inline field">
+            <label style="font-size: medium;">Title</label>
+            <input id="song_title_input" style="width: 50%;" type="text" placeholder="Title">
+          </div>
+        </div>
+        
+        <h4 class="ui inverted dividing header">Tonal settings</h4>
+        <div class="ui four columns grid" style="margin-inline:21px;">
+          <div class="middle aligned column" style="flex: 0 0 30px; padding:0px;">
+            <p>Key</p>
+          </div>
+          <div class="four wide column">
+            <select class="ui key modal three column fluid search dropdown">
+              <option disabled value=" "></option>
+              <option value="C">C</option>
+              <option value="C#">C#</option>
+              <option value="Db">Db</option>
+              <option value="D">D</option>
+              <option value="D#">D#</option>
+              <option value="Eb">Eb</option>
+              <option value="E">E</option>
+              <option disabled value=" "></option>
+              <option disabled value=" "></option>
+              <option value="F">F</option>
+              <option value="F#">F#</option>
+              <option value="Gb">Gb</option>
+              <option value="G">G</option>
+              <option value="G#">G#</option>
+              <option value="Ab">Ab</option>
+              <option value="A">A</option>
+              <option value="A#">A#</option>
+              <option value="Bb">Bb</option>
+              <option value="B">B</option>
+            </select>      
+          </div>
+          <div class="one wide middle aligned column" style="padding:0px;">
+            <p style="text-align: right;">Scale</p>
+          </div>
+          <div class="six wide column">
+            <select class="ui select scale modal fluid dropdown"></select>
+          </div>
+        </div>
+
+        <div class="ui inverted message">
+          <div class="header">Description:</div>
+          <p class="scale mode description"></p>
+          <div class="header">Scale notes in this key:</div>
+          <p class="mylist notes key" style="font-size: medium;"></p>
+        </div>
+        
+      </form>
+
+      <div class="ui info message">
+        <i class="close icon"></i>
+        <div class="header">Do you know guitar modes?</div>
+        <ul class="list">
+          <li>Do you know the scales of the modes and the musical theory behind them?</li>
+          <li>Do you know you can play all the 7 modes on the same scale?</li>
+        </ul>
+        <a href="https://www.jazzguitar.be/blog/guitar-modes/" target="_blank">Learn more here.</a>
+      </div>
+
+    </div>
+    
+    <div class="actions">
+      <span class="ui warning text" style="position:absolute; margin-top:10px; left:20px;">
+        Warning: saving will clear your current scale statistics.
+      </span>
+      <div class="ui black deny button">
+        Discard changes
+      </div>
+      <div id="modal_save_edit_btn" class="ui positive right labeled icon button">
+        Save
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Open session? MODAL -->
+<div id="openSessionWrapper">
+  <div id="openSessionModal" class="ui basic modal" style="margin-top: 15%;">
+    <div class="ui icon header"><i class="upload icon"></i>Do you want to open this song?</div>
+    <p id="modalOpenSongName" style="text-align: center;"></p>
+    <div class="actions">
+      <div class="ui red basic cancel inverted button"><i class="remove icon"></i>No</div>
+      <div class="ui green ok inverted button" id="modal_load_session_btn"><i class="checkmark icon"></i>Yes</div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete are u sure? MODAL -->
+<div id="deleteSessionModal" class="ui basic modal">
+  <div class="ui icon header"><i class="trash alternate outline icon" style="margin-bottom:20px;"></i>Do you want to delete this song?</div>
+  <p id="modalDeleteSongName" style="text-align: center;"></p>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button"><i class="remove icon"></i>No</div>
+    <div class="ui green ok inverted button" id="modal_delete_song_btn"><i class="checkmark icon"></i>Yes</div>
+  </div>
+</div>
+
+<!-- Delete all are u sure? MODAL -->
+<div id="deleteAllSessionsModal" class="ui basic modal">
+  <div class="ui icon header"><i class="trash alternate outline icon" style="margin-bottom:20px;"></i>Do you want to delete all the analyzed songs?</div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button"><i class="remove icon"></i>No</div>
+    <div class="ui green ok inverted button" id="modal_delete_all_songs_btn"><i class="checkmark icon"></i>Yes</div>
+  </div>
+</div>
+
+<script src="./utils.js"></script>
+<script src="./mainScript.js"></script>
+<script src="./player.js"></script>
+<script src="./canvas.js"></script>
+<script src="./storage.js"></script>
+<script src="./microphone.js"></script>
+<script src="./harmony.js"></script>
+
+</html>
